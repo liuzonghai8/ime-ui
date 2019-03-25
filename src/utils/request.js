@@ -6,6 +6,8 @@ import { getToken } from '@/utils/auth'
 // create an axios instance
 const service = axios.create({
   baseURL: process.env.BASE_API, // api 的 base_url
+  // baseURL: 'http://api.sweet.com/api/',
+  // baseURL: 'http://192.168.1.109/api',
   timeout: 5000 // request timeout
 })
 

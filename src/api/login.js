@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import { stringify } from 'qs'
 
 export function loginByUsername(username, password) {
   const data = {
@@ -6,22 +7,31 @@ export function loginByUsername(username, password) {
     password
   }
   return request({
-    url: '/login/login',
+    url: 'upms/sys/user/login',
+    // url: '/login/login',
     method: 'post',
-    data
+    data: stringify(data)
+  })
+}
+// test
+export function testApi() {
+  return request({
+    method: 'get',
+    url: 'upms/sys/user/test'
   })
 }
 
 export function logout() {
   return request({
-    url: '/login/logout',
+    url: 'upms/sys/user/logout',
     method: 'post'
   })
 }
 
 export function getUserInfo(token) {
   return request({
-    url: '/user/info',
+    // url: '/user/info',
+    url: 'upms/sys/user/info',
     method: 'get',
     params: { token }
   })

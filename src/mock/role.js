@@ -1,7 +1,9 @@
 import Mock from 'mockjs'
 import { deepClone } from '@/utils'
 import { filterAsyncRoutes } from '@/store/modules/permission'
-import { asyncRoutes, constantRoutes } from '@/router'
+// import { asyncRoutes, constantRoutes } from '@/router'
+import constantRoutes from '@/router/constantRoutes'
+import asyncRoutes from '@/router/asyncRoutes'
 
 const routes = deepClone([...constantRoutes, ...asyncRoutes])
 

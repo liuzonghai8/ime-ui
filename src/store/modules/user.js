@@ -48,21 +48,26 @@ const user = {
     LoginByUsername({ commit }, userInfo) {
       const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
+        // 调用api ，根据用户名和密码查询
         loginByUsername(username, userInfo.password).then(response => {
           const data = response.data
+          // 设置token
           commit('SET_TOKEN', data.token)
+          console.log(data.token)
           setToken(response.data.token)
           resolve()
         }).catch(error => {
           reject(error)
         })
-      })
+      }
+      )
     },
 
     // 获取用户信息
     GetUserInfo({ commit, state }) {
       return new Promise((resolve, reject) => {
         getUserInfo(state.token).then(response => {
+          console.log(response.data)
           // 由于mockjs 不支持自定义状态码只能这样hack
           if (!response.data) {
             reject('Verification failed, please login again.')

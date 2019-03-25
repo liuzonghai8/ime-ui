@@ -1,5 +1,5 @@
-import router from './router'
-import store from './store'
+import router from '../router'
+import store from '../store'
 import { Message } from 'element-ui'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
@@ -26,11 +26,13 @@ router.beforeEach((to, from, next) => {
       next({ path: '/' })
       NProgress.done() // if current page is dashboard will not trigger	afterEach hook, so manually handle it
     } else {
+      next()
       if (store.getters.roles.length === 0) {
         // 判断当前用户是否已拉取完user_info信息
-        store
-          .dispatch('GetUserInfo')
+        store.dispatch('GetUserInfo')
           .then(res => {
+            console.log('roles: ')
+            console.log(res.data.roles)
             // 拉取user_info
             const roles = res.data.roles // note: roles must be a object array! such as: [{id: '1', name: 'editor'}, {id: '2', name: 'developer'}]
             store.dispatch('GenerateRoutes', { roles }).then(accessRoutes => {

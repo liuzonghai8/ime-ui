@@ -1,5 +1,6 @@
-import { asyncRoutes, constantRoutes } from '@/router'
-
+// import { asyncRoutes, constantRoutes } from '@/router'
+import constantRoutes from '@/router/constantRoutes'
+import asyncRoutes from '@/router/asyncRoutes'
 /**
  * 通过meta.role判断是否与当前用户权限匹配
  * @param roles
@@ -50,6 +51,7 @@ const permission = {
       return new Promise(resolve => {
         const { roles } = data
         let accessedRoutes
+        //  accessedRoutes = asyncRoutes
         if (roles.includes('admin')) {
           accessedRoutes = asyncRoutes
         } else {
@@ -58,6 +60,10 @@ const permission = {
         commit('SET_ROUTES', accessedRoutes)
         resolve(accessedRoutes)
       })
+    },
+    // test
+    GetRoutesTest({ commit }, data) {
+      commit('SET_ROUTES', asyncRoutes)
     }
   }
 }
