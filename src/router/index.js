@@ -5,7 +5,8 @@ Vue.use(Router)
 
 import constantRoutes from './constantRoutes'
 
-// import asyncRoutes from '/asyncRoutes'
+// TODO： 需要改造：根据登陆的用户，从后台生成
+import asyncRoutes from './asyncRoutes'
 
 /** note: sub-menu only appear when children.length>=1
  *  detail see  https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -31,7 +32,8 @@ import constantRoutes from './constantRoutes'
 export default new Router({
   // mode: 'history', // require service support
   // scrollBehavior: () => ({ y: 0 }),
-  routes: constantRoutes,
+
+  routes: constantRoutes.concat(asyncRoutes), // .concat[asyncRoutes],
   // routes: [{ path: "/login", component: () => import('@/views/login/index') }],
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {

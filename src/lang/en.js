@@ -4,6 +4,9 @@ export default {
     introduction: 'Introduction',
     documentation: 'Documentation',
     guide: 'Guide',
+    systemManagement: 'systemManagement',
+    userManagement: 'userManagement',
+    roleManagement: 'roleManagement',
     permission: 'Permission',
     pagePermission: 'Page Permission',
     rolePermission: 'Role Permission',
@@ -163,5 +166,17 @@ export default {
     close: 'Close',
     closeOthers: 'Close Others',
     closeAll: 'Close All'
+  },
+  user: {
+    id: 'ID',
+    LoginName: 'LoginName',
+    realNmae: 'realNmae',
+    enableTag: 'enableTag',
+    phone: 'phone'
+
+  },
+  utils: {
+    KeywordSearch: 'Please enter keyword search',
+    LoadData: 'Loading Data Wait for a moment, please '
   }
 }

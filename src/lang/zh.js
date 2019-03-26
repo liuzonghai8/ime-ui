@@ -4,6 +4,9 @@ export default {
     introduction: '简述',
     documentation: '文档',
     guide: '引导页',
+    systemManagement: '系统管理',
+    userManagement: '用户管理',
+    roleManagement: '角色管理',
     permission: '权限测试页',
     rolePermission: '角色权限',
     pagePermission: '页面权限',
@@ -163,5 +166,16 @@ export default {
     close: '关闭',
     closeOthers: '关闭其它',
     closeAll: '关闭所有'
+  },
+  user: {
+    id: '序号',
+    LoginName: '登陆名',
+    realNmae: '真名',
+    enableTag: '状态',
+    phone: '电话号码'
+  },
+  utils: {
+    KeywordSearch: '请输入关键字搜索',
+    LoadData: '正在加载数据,请稍等 ……'
   }
 }
