@@ -50,7 +50,7 @@
       @sort-change="sortChange"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column type="selection" width="45" />
+      <el-table-column type="selection" width="45"/>
       <el-table-column :label="$t('user.id')" prop="id" sortable="custom" align="center" width="95">
         <template slot-scope="scope">
           <span>{{ scope.row.id }}</span>
@@ -90,14 +90,28 @@
 
     <!-- 分页 -->
     <!-- :current-page="currentPage4" -->
-    <el-pagination
-      :page-sizes="[10, 20, 30, 100,`${total}`]"
-      :page-size="10"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="total"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
+    <div v-show="!loading" class="pagination-container">
+      <el-pagination
+        :page-sizes="[10, 20, 30, 100,`${total}`]"
+        :page-size="10"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
+    </div>
+    <!-- 对话框 editeMack ? $t('table.edit') : $('table.add')+ -->
+    <el-dialog :title="$t('user.title')" :visible.sync="dialogVisible">
+      <el-form ref="form" :model="form" label-width="80px">
+        <el-form-item label="登陆名" prop="loginName">
+          <el-input v-model="form.loginName" placeholder="请输用户名"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -115,14 +129,17 @@ export default {
         page: 1,
         rowsPerPage: 10
       },
-      selections: []
+      selections: [],//选中的内容
+      dialogVisible: false,
+      editeMack: false,
+      form: {}
     }
   },
 
   watch: {
     // 监听数据的变化，数据有变化时刷新列表 // 监视pagination属性的变化
     pagination: {
-      handler() {
+      handler () {
         // 变化后的回调函数，这里我们再次调用getDataFromServer即可
         this.getDatas()
       },
@@ -130,24 +147,25 @@ export default {
     },
     // 监视搜索字段
     search: {
-      handler() {
+      handler () {
         this.getDatas()
       }
     }
   },
-  mounted() {
+  mounted () {
     // 根据监听pagination 的获取数据
     this.getDatas()
   },
 
   methods: {
-    sortChange() {
+    sortChange () {
       console.log('改版排序顺序')
     },
-    handleCreate() {
+    handleCreate () {
+      this.dialogVisible = true
       console.log('handleCreate')
     },
-    handleDelete() {
+    handleDelete () {
       const users = this.selections
       if (users.length == 1) {
         this.$confirm('此操作将永久删除该用户(用户名:' + users[0].loginName + '), 是否继续?',
@@ -157,16 +175,16 @@ export default {
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
-          deleteObj(users[0].id)
-            .then(() => {
-              this.getDatas()
-              this.$notify({
-                title: '成功',
-                message: '删除成功',
-                type: 'success',
-                duration: 2000
+            deleteObj(users[0].id)
+              .then(() => {
+                this.getDatas()
+                this.$notify({
+                  title: '成功',
+                  message: '删除成功',
+                  type: 'success',
+                  duration: 2000
+                })
               })
-            })
             // .cacth(() => {
             //   this.$notify({
             //     title: "失败",
@@ -175,14 +193,14 @@ export default {
             //     duration: 2000
             //   })
             // })
-        },
-        () => { console.log('取消') }
-        )
+          },
+            () => { console.log('取消') }
+          )
       } else if (users.length > 1) {
 
       }
     },
-    getDatas() {
+    getDatas () {
       fetchObjs({
         key: this.search, // 搜索条件
         page: this.pagination.page, // 当前页
@@ -196,14 +214,14 @@ export default {
         console.log(resp.data)
       })
     },
-    handleSelectionChange(val) {
+    handleSelectionChange (val) {
       this.selections = val
     },
-    handleSizeChange(val) {
+    handleSizeChange (val) {
       this.pagination.rowsPerPage = val
       console.log(`每页 ${val} 条`)
     },
-    handleCurrentChange(val) {
+    handleCurrentChange (val) {
       this.pagination.page = val
     }
 

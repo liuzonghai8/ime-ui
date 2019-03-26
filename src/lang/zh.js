@@ -172,7 +172,8 @@ export default {
     LoginName: '登陆名',
     realNmae: '真名',
     enableTag: '状态',
-    phone: '电话号码'
+    phone: '电话号码',
+    title: '用户'
   },
   utils: {
     KeywordSearch: '请输入关键字搜索',

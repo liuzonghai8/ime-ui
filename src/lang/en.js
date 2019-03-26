@@ -172,8 +172,8 @@ export default {
     LoginName: 'LoginName',
     realNmae: 'realNmae',
     enableTag: 'enableTag',
-    phone: 'phone'
-
+    phone: 'phone',
+    title: 'user'
   },
   utils: {
     KeywordSearch: 'Please enter keyword search',
