@@ -10,24 +10,7 @@
         icon="el-icon-plus"
         @click="handleCreate"
       >{{ $t('table.add') }}</el-button>
-      <!-- 编辑按钮 v-show="selections.length==1" -->
-      <el-button
-        :disabled="!(selections.length==1)"
-        class="filter-item"
-        style="margin-left: 10px;"
-        type="primary"
-        icon="el-icon-edit"
-        @click="handleCreate"
-      >{{ $t('table.edit') }}</el-button>
-      <!-- 删除按钮，可批量 -->
-      <el-button
-        v-show="selections.length"
-        class="filter-item"
-        style="margin-left: 10px;"
-        type="primary"
-        icon="el-icon-delete"
-        @click="handleDelete"
-      >{{ $t('table.delete') }}</el-button>
+
       <!-- 搜索输入框 -->
       <el-input
         v-model="search"
@@ -50,7 +33,6 @@
       @sort-change="sortChange"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column type="selection" width="45"/>
       <el-table-column :label="$t('user.id')" prop="id" sortable="custom" align="center" width="95">
         <template slot-scope="scope">
           <span>{{ scope.row.id }}</span>
@@ -71,19 +53,35 @@
           <span>{{ scope.row.phone }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="enable_tag" :label="$t('user.enableTag')">
-        <!-- :type="scope.row.enableTag === '0' ? 'primary' : 'success'"
-        disable-transitions-->
+      <!-- <el-table-column prop="enable_tag" :label="$t('user.enableTag')">
         <template slot-scope="scope">
           <el-tag>{{ scope.row.enableTag==='0' ? '有效': '不可用' }}</el-tag>
         </template>
-        <!-- <template slot-scope="scope">
-          <span>{{ scope.row.enableTag==='0' ? '有效': '失效' }}</span>
-        </template>-->
-      </el-table-column>
-      <el-table-column :label="$t('table.actions')">
+      </el-table-column>-->
+      <el-table-column align="center" class-name="status-col" :label="$t('user.enableTag')">
         <template slot-scope="scope">
-          <el-button size="small" type="primary" round>角色</el-button>
+          <el-tag>{{scope.row.enableTag | statusFilter}}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('table.actions')" fixed="right" width="280">
+        <template slot-scope="scope">
+          <!-- 编辑按钮  :disabled="!(selections.length==1)"    v-show="selections.length"-->
+          <el-button
+            size="small"
+            type="primary"
+            icon="el-icon-edit"
+            round
+            @click="handleEdit(scope.row)"
+          >{{ $t('table.edit') }}</el-button>
+          <!--单个 删除按钮  class="filter-item"-->
+          <el-button
+            size="small"
+            type="danger"
+            icon="el-icon-delete"
+            round
+            @click="handleDelete(scope.row)"
+          >{{ $t('table.delete') }}</el-button>
+          <el-button size="small" type="primary" icon="el-icon-plus" round>角色</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -101,21 +99,17 @@
       />
     </div>
     <!-- 对话框 editeMack ? $t('table.edit') : $('table.add')+ -->
-    <el-dialog :title="$t('user.title')" :visible.sync="dialogVisible">
-      <el-form ref="form" :model="form" label-width="80px">
-        <el-form-item label="登陆名" prop="loginName">
-          <el-input v-model="form.loginName" placeholder="请输用户名"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-      </div>
+    <el-dialog
+      :title="(editeMack? $t('table.add'):$t('table.edit'))+$t('user.title')"
+      :visible.sync="dialogVisible"
+    >
+      <UserForm/>
     </el-dialog>
   </div>
 </template>
 <script>
-import { fetchObjs, deleteObj } from '@/api/user'
+import { fetchObjs, deleteObj } from '@/api/sys/user'
+import UserForm from './UserForm'
 export default {
   data: () => {
     return {
@@ -132,10 +126,22 @@ export default {
       selections: [],//选中的内容
       dialogVisible: false,
       editeMack: false,
-      form: {}
+      userId: ''
     }
   },
-
+  components: {
+    UserForm
+  },
+  filters: {
+    statusFilter (status) {
+      const statusMap = {
+        0: "有效",
+        1: "无效",
+        9: "锁定"
+      };
+      return statusMap[status];
+    }
+  },
   watch: {
     // 监听数据的变化，数据有变化时刷新列表 // 监视pagination属性的变化
     pagination: {
@@ -163,42 +169,20 @@ export default {
     },
     handleCreate () {
       this.dialogVisible = true
+      this.editeMack = false
       console.log('handleCreate')
     },
-    handleDelete () {
-      const users = this.selections
-      if (users.length == 1) {
-        this.$confirm('此操作将永久删除该用户(用户名:' + users[0].loginName + '), 是否继续?',
-          '提示',
-          {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            deleteObj(users[0].id)
-              .then(() => {
-                this.getDatas()
-                this.$notify({
-                  title: '成功',
-                  message: '删除成功',
-                  type: 'success',
-                  duration: 2000
-                })
-              })
-            // .cacth(() => {
-            //   this.$notify({
-            //     title: "失败",
-            //     message: "删除失败",
-            //     type: "error",
-            //     duration: 2000
-            //   })
-            // })
-          },
-            () => { console.log('取消') }
-          )
-      } else if (users.length > 1) {
+    handleEdit (param) {
+      this.userId = param
+      this.dialogVisible = true
+      this.editeMack = true
+    },
+    handleDelete (param) {
+      this.delete(param)
+    },
+    //提交按钮
+    submit () {
 
-      }
     },
     getDatas () {
       fetchObjs({
@@ -214,17 +198,45 @@ export default {
         console.log(resp.data)
       })
     },
+    //表格选择
     handleSelectionChange (val) {
       this.selections = val
     },
+    //表格页号的改变
     handleSizeChange (val) {
       this.pagination.rowsPerPage = val
-      console.log(`每页 ${val} 条`)
     },
+    //表格页内条数的改变
     handleCurrentChange (val) {
       this.pagination.page = val
-    }
+    },
 
+    //物理删除的办法
+    delete (param) {
+      this.$confirm('此操作将永久删除该用户(用户名:' + param.loginName + '), 是否继续?',
+        '提示',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          deleteObj(param.id)
+            .then(() => {
+              this.getDatas()
+              this.$notify({
+                title: '成功',
+                message: '删除成功',
+                type: 'success',
+                duration: 2000
+              })
+            })
+        },
+          () => { console.log('取消') }
+        )
+    }
+    //
   }
 }
 </script>
+
+

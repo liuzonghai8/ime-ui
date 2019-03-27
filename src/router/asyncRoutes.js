@@ -21,7 +21,7 @@ export default [
     children: [
       {
         path: 'user',
-        component: () => import('@/views/sys/User'),
+        component: () => import('@/views/sys/user/User'),
         name: 'user',
         meta: {
           title: 'userManagement',
@@ -32,7 +32,7 @@ export default [
       },
       {
         path: 'role',
-        component: () => import('@/views/sys/Role'),
+        component: () => import('@/views/sys/role/Role'),
         name: 'role',
         meta: {
           title: 'roleManagement',
