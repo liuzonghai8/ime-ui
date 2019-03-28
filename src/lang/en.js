@@ -170,7 +170,7 @@ export default {
   user: {
     id: 'ID',
     LoginName: 'LoginName',
-    realNmae: 'realNmae',
+    realName: 'realName',
     enableTag: 'enableTag',
     phone: 'phone',
     title: 'user'

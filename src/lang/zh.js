@@ -170,7 +170,7 @@ export default {
   user: {
     id: '序号',
     LoginName: '登陆名',
-    realNmae: '真名',
+    realName: '真名',
     enableTag: '状态',
     phone: '电话号码',
     title: '用户'

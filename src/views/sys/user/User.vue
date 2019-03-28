@@ -43,9 +43,9 @@
           <span>{{ scope.row.loginName }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="realName" :label="$t('user.realNmae')">
+      <el-table-column prop="realName" :label="$t('user.realName')">
         <template slot-scope="scope">
-          <span>{{ scope.row.realNmae }}</span>
+          <span>{{ scope.row.realName }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="phone" :label="$t('user.phone')">
@@ -53,14 +53,15 @@
           <span>{{ scope.row.phone }}</span>
         </template>
       </el-table-column>
-      <!-- <el-table-column prop="enable_tag" :label="$t('user.enableTag')">
-        <template slot-scope="scope">
-          <el-tag>{{ scope.row.enableTag==='0' ? '有效': '不可用' }}</el-tag>
-        </template>
-      </el-table-column>-->
       <el-table-column align="center" class-name="status-col" :label="$t('user.enableTag')">
         <template slot-scope="scope">
           <el-tag>{{scope.row.enableTag | statusFilter}}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="创建时间">
+        <template slot-scope="scope">
+          <!-- <span>{{scope.row.createTime | parseTime('{y}-{m}-{d} {h}:{i}')}}</span> -->
+          <span>{{scope.row.createTime}}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('table.actions')" fixed="right" width="280">
@@ -71,7 +72,7 @@
             type="primary"
             icon="el-icon-edit"
             round
-            @click="handleEdit(scope.row)"
+            @click="handleEdit(scope.row.id)"
           >{{ $t('table.edit') }}</el-button>
           <!--单个 删除按钮  class="filter-item"-->
           <el-button
@@ -98,12 +99,16 @@
         @current-change="handleCurrentChange"
       />
     </div>
-    <!-- 对话框 editeMack ? $t('table.edit') : $('table.add')+ -->
+    <!-- 对话框 editTag ? $t('table.edit') : $('table.add')+ -->
     <el-dialog
-      :title="(editeMack? $t('table.add'):$t('table.edit'))+$t('user.title')"
+      :title="(editTag? $t('table.edit'):$t('table.add'))+$t('user.title')"
       :visible.sync="dialogVisible"
+      center
+      :close="closeDialog"
+      :before-close="closeDialog"
     >
-      <UserForm/>
+      <!-- <UserForm :userId="userId"/> -->
+      <UserForm :editTag="editTag" :userId="userId" v-on:show="closeDialog"/>
     </el-dialog>
   </div>
 </template>
@@ -125,8 +130,8 @@ export default {
       },
       selections: [],//选中的内容
       dialogVisible: false,
-      editeMack: false,
-      userId: ''
+      editTag: false,
+      userId: 0
     }
   },
   components: {
@@ -164,18 +169,31 @@ export default {
   },
 
   methods: {
+    initData () {
+      this.editTag = false,
+        this.dialogVisible = false,
+        this.userId = 0,
+        this.getDatas()
+
+    },
+    //关闭对话框
+    closeDialog () {
+      console.log("click  close ")
+      this.initData();
+    },
     sortChange () {
       console.log('改版排序顺序')
     },
     handleCreate () {
       this.dialogVisible = true
-      this.editeMack = false
+      this.editTag = false
       console.log('handleCreate')
     },
     handleEdit (param) {
       this.userId = param
+      console.log(this.userId)
       this.dialogVisible = true
-      this.editeMack = true
+      this.editTag = true
     },
     handleDelete (param) {
       this.delete(param)

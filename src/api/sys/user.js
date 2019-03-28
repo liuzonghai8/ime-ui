@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import { stringify } from 'qs'
 // 查询 分页
 export const fetchObjs = async (params) => {
   return await request({
