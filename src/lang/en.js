@@ -170,13 +170,34 @@ export default {
   user: {
     id: 'ID',
     LoginName: 'LoginName',
+    password: 'password',
     realName: 'realName',
-    enableTag: 'enableTag',
+    enableTag: 'status',
     phone: 'phone',
-    title: 'user'
+    title: 'user',
+    createTime: 'createTime',
+    updateTime: 'updateTime',
+    addRole: 'Role',
+    avater: 'avater',
+
   },
   utils: {
     KeywordSearch: 'Please enter keyword search',
-    LoadData: 'Loading Data Wait for a moment, please '
+    LoadData: 'Loading Data Wait for a moment, please ',
+    InputUserName: 'Please enter a user name',
+    InputPassword: 'InputPassword',
+    InputRealName: 'InputRealName',
+    InputPhone: 'InputPhone',
+    SelectStatus: 'SelectStatus'
+
+  },
+  globalButton: {
+    add: 'add',
+    edit: 'edit',
+    delete: 'delete',
+    cancel: 'cancel',
+    confirm: 'confirm',
+    reset: 'reset',
+    submit: 'submit'
   }
 }

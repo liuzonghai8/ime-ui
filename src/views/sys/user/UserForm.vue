@@ -8,20 +8,25 @@
       class="demo-ruleForm"
     >
       <!-- <el-form ref="newData" :model="newData" :rules="rules" label-width="80px"> -->
-      <el-form-item label="登陆名" prop="loginName">
-        <el-input v-model="userForm.loginName" placeholder="请输用户名"></el-input>
+      <el-form-item :label="$t('user.LoginName')" prop="loginName">
+        <el-input v-model="userForm.loginName" :placeholder="$t('utils.InputUserName')"></el-input>
       </el-form-item>
-      <el-form-item v-if="!editTag" label="密码" prop="password">
-        <el-input v-model="userForm.password" placeholder="请输用户名"></el-input>
+      <el-form-item v-if="!editTag" :label="$t('user.password')" prop="password">
+        <el-input v-model="userForm.password" :placeholder="$t('utils.InputPassword')"></el-input>
       </el-form-item>
-      <el-form-item label="真名" prop="realName">
-        <el-input v-model="userForm.realName" placeholder="请输用户名"></el-input>
+      <!-- :label="$t('user.realName')" -->
+      <el-form-item :label="$t('user.realName')" prop="realName">
+        <el-input v-model="userForm.realName" :placeholder="$t('utils.InputRealName')"></el-input>
       </el-form-item>
-      <el-form-item label="电话号码" prop="phone">
-        <el-input v-model="userForm.phone" placeholder="请输用户名"></el-input>
+      <el-form-item :label="$t('user.phone')" prop="phone">
+        <el-input v-model="userForm.phone" :placeholder="$t('utils.InputPhone')"></el-input>
       </el-form-item>
-      <el-form-item label="状态" prop="enableTag">
-        <el-select class="filter-item" v-model="userForm.enableTag" placeholder="请选择">
+      <el-form-item :label="$t('user.enableTag')" prop="enableTag">
+        <el-select
+          class="filter-item"
+          v-model="userForm.enableTag"
+          :placeholder="$t('utils.SelectStatus')"
+        >
           <el-option
             v-for="item in statusOptions"
             :key="item"
@@ -30,7 +35,7 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="头像" prop="avater">
+      <el-form-item :label="$t('user.avater')" prop="avater">
         <el-upload
           class="avatar-uploader"
           action
@@ -43,8 +48,9 @@
         </el-upload>
       </el-form-item>
       <el-form-item>
-        <el-button @click="resetForm('userForm')">重置</el-button>
-        <el-button type="primary" @click="submit('userForm')">提交</el-button>
+        <el-button v-if="editTag" @click="handleCancel()">{{ $t('globalButton.cancel') }}</el-button>
+        <el-button v-else @click="resetForm('userForm')">{{ $t('globalButton.reset') }}</el-button>
+        <el-button type="primary" @click="submit('userForm')">{{ $t('globalButton.submit') }}</el-button>
       </el-form-item>
     </el-form>
     <!-- <div slot="footer" class="dialog-footer">
@@ -126,6 +132,7 @@ export default {
     initData () {
       this.userForm = {}
     },
+    //提交
     submit (formName) {
       this.$refs[formName].validate((valid) => {
         let { createTime, updateTime, ...arg } = this.userForm
@@ -155,22 +162,13 @@ export default {
         }
       });
     },
+    //重置
     resetForm (userForm) {
       this.$refs[userForm].resetFields();
     },
-
-    //提交按钮事件
-    // submitk () {
-    //   if (this.$refs[form].validate(valid)) {
-    //     console.log(valid)
-    //       // 将数据提交到后台 通过editTag 判断是添加还是修改
-    //       (this.editTag ? putObj(this.newData) : addObj(this.newData))
-    //       .then(() => {
-    //         this.initData(), this.$emit('show'),
-    //           console.log("保存成功")
-    //       })
-    //   }
-    // },
+    handleCancel () {
+      this.$emit('show')
+    },
 
     //根据用户id 加载用户信息
     loadUser () {

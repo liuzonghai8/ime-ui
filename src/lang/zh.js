@@ -123,7 +123,7 @@ export default {
     type: '类型',
     remark: '点评',
     search: '搜索',
-    add: '添加',
+
     export: '导出',
     reviewer: '审核人',
     id: '序号',
@@ -132,12 +132,8 @@ export default {
     readings: '阅读数',
     status: '状态',
     actions: '操作',
-    edit: '编辑',
     publish: '发布',
     draft: '草稿',
-    delete: '删除',
-    cancel: '取 消',
-    confirm: '确 定'
   },
   errorLog: {
     tips: '请点击右上角bug小图标',
@@ -170,13 +166,32 @@ export default {
   user: {
     id: '序号',
     LoginName: '登陆名',
+    password: '密码',
     realName: '真名',
     enableTag: '状态',
     phone: '电话号码',
-    title: '用户'
+    title: '用户',
+    createTime: '创建时间',
+    updateTime: '更新时间',
+    addRole: '角色',
+    avater: '头像'
   },
   utils: {
     KeywordSearch: '请输入关键字搜索',
-    LoadData: '正在加载数据,请稍等 ……'
+    LoadData: '正在加载数据,请稍等 ……',
+    InputUserName: '请输入用户名',
+    InputPassword: '请输入密码',
+    InputRealName: '请输入真名',
+    InputPhone: '请输入电话号码',
+    SelectStatus: '请选择'
+  },
+  globalButton: {
+    add: '添 加',
+    edit: '编 辑',
+    delete: '删 除',
+    cancel: '取 消',
+    confirm: '确 定',
+    reset: '重 置',
+    submit: '提 交'
   }
 }

@@ -9,7 +9,7 @@
         type="primary"
         icon="el-icon-plus"
         @click="handleCreate"
-      >{{ $t('table.add') }}</el-button>
+      >{{ $t('globalButton.add') }}</el-button>
 
       <!-- 搜索输入框 -->
       <el-input
@@ -20,7 +20,7 @@
         style="width: 390px"
       />
     </div>
-    <!-- table  -->
+    <!-- table height="850" -->
     <el-table
       v-loading="loading"
       :element-loading-text="$t('utils.LoadData')"
@@ -28,8 +28,9 @@
       border
       fit
       highlight-current-row
-      style="width: 100%;"
+      style="width: 98%;"
       cell-click
+      header-click
       @sort-change="sortChange"
       @selection-change="handleSelectionChange"
     >
@@ -38,12 +39,12 @@
           <span>{{ scope.row.id }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="loginName" :label="$t('user.LoginName')">
+      <el-table-column prop="login_name" sortable="custom" :label="$t('user.LoginName')">
         <template slot-scope="scope">
           <span>{{ scope.row.loginName }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="realName" :label="$t('user.realName')">
+      <el-table-column prop="real_name" sortable="custom" :label="$t('user.realName')">
         <template slot-scope="scope">
           <span>{{ scope.row.realName }}</span>
         </template>
@@ -53,15 +54,37 @@
           <span>{{ scope.row.phone }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" class-name="status-col" :label="$t('user.enableTag')">
+      <el-table-column
+        align="center"
+        class-name="status-col"
+        prop="enable_tag"
+        sortable="custom"
+        :label="$t('user.enableTag')"
+      >
         <template slot-scope="scope">
           <el-tag>{{scope.row.enableTag | statusFilter}}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="创建时间">
+      <el-table-column
+        align="center"
+        prop="create_time"
+        sortable="custom"
+        :label="$t('user.createTime')"
+      >
         <template slot-scope="scope">
           <!-- <span>{{scope.row.createTime | parseTime('{y}-{m}-{d} {h}:{i}')}}</span> -->
           <span>{{scope.row.createTime}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        align="center"
+        prop="update_time"
+        sortable="custom"
+        :label="$t('user.updateTime')"
+      >
+        <template slot-scope="scope">
+          <!-- <span>{{scope.row.updateTime | parseTime('{y}-{m}-{d} {h}:{i}')}}</span> -->
+          <span>{{scope.row.updateTime}}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('table.actions')" fixed="right" width="280">
@@ -73,7 +96,7 @@
             icon="el-icon-edit"
             round
             @click="handleEdit(scope.row.id)"
-          >{{ $t('table.edit') }}</el-button>
+          >{{ $t('globalButton.edit') }}</el-button>
           <!--单个 删除按钮  class="filter-item"-->
           <el-button
             size="small"
@@ -81,8 +104,8 @@
             icon="el-icon-delete"
             round
             @click="handleDelete(scope.row)"
-          >{{ $t('table.delete') }}</el-button>
-          <el-button size="small" type="primary" icon="el-icon-plus" round>角色</el-button>
+          >{{ $t('globalButton.delete') }}</el-button>
+          <el-button size="small" type="primary" icon="el-icon-plus" round>{{$t('user.addRole')}}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -101,7 +124,7 @@
     </div>
     <!-- 对话框 editTag ? $t('table.edit') : $('table.add')+ -->
     <el-dialog
-      :title="(editTag? $t('table.edit'):$t('table.add'))+$t('user.title')"
+      :title="(editTag? $t('globalButton.edit'):$t('globalButton.add'))+'  '+$t('user.title')"
       :visible.sync="dialogVisible"
       center
       :close="closeDialog"
@@ -120,15 +143,17 @@ export default {
     return {
       search: '', // 搜索关键字
       total: 0, // 总条数
-      selected: [], // 选择的条目
-      total: 20, // 总条数
+      //selected: [], // 选择的条目
       datas: [], // 数据集合
       loading: true, // 加载进度条
       pagination: {
         page: 1,
-        rowsPerPage: 10
+        rowsPerPage: 10,
+        sortBy: '',
+        descending: ''
+
       },
-      selections: [],//选中的内容
+      //selections: [],//选中的内容
       dialogVisible: false,
       editTag: false,
       userId: 0
@@ -150,11 +175,12 @@ export default {
   watch: {
     // 监听数据的变化，数据有变化时刷新列表 // 监视pagination属性的变化
     pagination: {
+      deep: true, // deep为true，会监视pagination的属性及属性中的对象属性变化
       handler () {
         // 变化后的回调函数，这里我们再次调用getDataFromServer即可
         this.getDatas()
-      },
-      deep: true // deep为true，会监视pagination的属性及属性中的对象属性变化
+      }
+
     },
     // 监视搜索字段
     search: {
@@ -181,20 +207,23 @@ export default {
       console.log("click  close ")
       this.initData();
     },
-    sortChange () {
-      console.log('改版排序顺序')
+    //排序
+    sortChange (param) {
+      this.pagination.sortBy = param.prop // 排序字段
+      this.pagination.descending = (param.order === 'descending' ? true : false)// 是否降序
     },
+    //弹出新建按钮
     handleCreate () {
       this.dialogVisible = true
       this.editTag = false
-      console.log('handleCreate')
     },
+    //弹出编辑按钮
     handleEdit (param) {
       this.userId = param
-      console.log(this.userId)
       this.dialogVisible = true
       this.editTag = true
     },
+    //删除
     handleDelete (param) {
       this.delete(param)
     },
@@ -202,6 +231,7 @@ export default {
     submit () {
 
     },
+    //从服务器获取数据
     getDatas () {
       fetchObjs({
         key: this.search, // 搜索条件
@@ -210,8 +240,8 @@ export default {
         sortBy: this.pagination.sortBy, // 排序字段
         desc: this.pagination.descending // 是否降序
       }).then(resp => {
-        this.datas = resp.data.list
-        this.total = resp.data.total
+        this.datas = resp.data.data.list
+        this.total = resp.data.data.total
         this.loading = false
         console.log(resp.data)
       })
