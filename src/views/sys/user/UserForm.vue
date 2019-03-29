@@ -21,6 +21,26 @@
       <el-form-item :label="$t('user.phone')" prop="phone">
         <el-input v-model="userForm.phone" :placeholder="$t('utils.InputPhone')"></el-input>
       </el-form-item>
+      <!-- 部门 -->
+      <!-- <el-form-item :label="$t('user.realName')" prop="realName">
+        <el-input v-model="userForm.realName" :placeholder="$t('utils.InputRealName')"></el-input>
+      </el-form-item>-->
+      <!-- 角色 -->
+      <el-form-item :label="$t('user.addRole')" prop="roles">
+        <el-select v-model="roles" placeholder="请选择" multiple>
+          <el-option
+            v-for="item in rolesOptions"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+            :disabled="isDisabled[item.enableTag]"
+          >
+            <!-- <span style="float: left">{{ item.description }}</span>
+            <span style="float: right; color: #8492a6; font-size: 13px">{{ item.code }}</span>-->
+          </el-option>
+        </el-select>
+      </el-form-item>
+
       <el-form-item :label="$t('user.enableTag')" prop="enableTag">
         <el-select
           class="filter-item"
@@ -35,6 +55,7 @@
           ></el-option>
         </el-select>
       </el-form-item>
+
       <el-form-item :label="$t('user.avater')" prop="avater">
         <el-upload
           class="avatar-uploader"
@@ -62,6 +83,7 @@
 </template>
 <script>
 import { addObj, putObj, getObj } from '@/api/sys/user'
+import { fetchAllObjs } from '@/api/sys/role'
 export default {
   props: {
     editTag: {
@@ -75,6 +97,7 @@ export default {
 
   data: () => {
     return {
+      roles: [],
       userForm: {
         loginName: '',
         realName: '',
@@ -85,6 +108,11 @@ export default {
       },
       imageUrl: '',
       statusOptions: ["0", "1", "9"],
+      rolesOptions: [],
+      isDisabled: {
+        0: false,
+        1: true
+      },
       rules: {
         loginName: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
@@ -97,6 +125,11 @@ export default {
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
           { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' }
+        ],
+        phone: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          // { type: 'number', message: '手机号码必须为数字', trigger: 'blur' },
+          { min: 1, max: 11, message: '长度在11 个字符', trigger: 'blur' }
         ]
       }
     }
@@ -114,6 +147,7 @@ export default {
   },
   //页面加载钩子函数
   mounted () {
+    this.loadAllRoles()
     this.userId ? this.loadUser() : this.initData()
   },
 
@@ -136,6 +170,8 @@ export default {
     submit (formName) {
       this.$refs[formName].validate((valid) => {
         let { createTime, updateTime, ...arg } = this.userForm
+        arg.roles = this.roles
+        console.log(arg)
         if (valid) {
           //1.提交处理事件
           //2.成功后 初始化并关闭对话框
@@ -169,10 +205,16 @@ export default {
     handleCancel () {
       this.$emit('show')
     },
-
     //根据用户id 加载用户信息
     loadUser () {
       getObj(this.userId).then(resp => { this.userForm = resp.data, console.log(resp.data) })
+    },
+    //加载角色选项
+    loadAllRoles () {
+      fetchAllObjs().then(resp => {
+        this.rolesOptions = resp.data.filter(d => d.enableTag == 0)
+        console.log(this.rolesOptions)
+      })
     },
 
     //上传相关

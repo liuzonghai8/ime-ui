@@ -13,11 +13,11 @@
 
       <!-- 搜索输入框 -->
       <el-input
+        style="margin-left: 10px;width: 390px"
         v-model="search"
         :placeholder="$t('utils.KeywordSearch')"
         class="filter-item"
         prefix-icon="el-icon-search"
-        style="width: 390px"
       />
     </div>
     <!-- table height="850" -->
@@ -105,7 +105,13 @@
             round
             @click="handleDelete(scope.row)"
           >{{ $t('globalButton.delete') }}</el-button>
-          <el-button size="small" type="primary" icon="el-icon-plus" round>{{$t('user.addRole')}}</el-button>
+          <el-button
+            size="small"
+            type="primary"
+            icon="el-icon-plus"
+            round
+            @click="handleAddRole(scope.row)"
+          >{{$t('user.addRole')}}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -125,19 +131,31 @@
     <!-- 对话框 editTag ? $t('table.edit') : $('table.add')+ -->
     <el-dialog
       :title="(editTag? $t('globalButton.edit'):$t('globalButton.add'))+'  '+$t('user.title')"
-      :visible.sync="dialogVisible"
+      :visible.sync="dialogUserForm"
       center
       :close="closeDialog"
       :before-close="closeDialog"
+      v-if="dialogUserForm"
     >
       <!-- <UserForm :userId="userId"/> -->
       <UserForm :editTag="editTag" :userId="userId" v-on:show="closeDialog"/>
+    </el-dialog>
+    <el-dialog
+      :title="$t('user.title')"
+      :visible.sync="dialogUerRole"
+      center
+      :close="closeDialog"
+      :before-close="closeDialog"
+      v-if="dialogUerRole"
+    >
+      <UserRole :userId="userId" v-on:show="closeDialog"/>
     </el-dialog>
   </div>
 </template>
 <script>
 import { fetchObjs, deleteObj } from '@/api/sys/user'
 import UserForm from './UserForm'
+import UserRole from './UserRole'
 export default {
   data: () => {
     return {
@@ -154,13 +172,15 @@ export default {
 
       },
       //selections: [],//选中的内容
-      dialogVisible: false,
+      dialogUserForm: false,
+      dialogUerRole: false,
       editTag: false,
       userId: 0
     }
   },
   components: {
-    UserForm
+    UserForm,
+    UserRole
   },
   filters: {
     statusFilter (status) {
@@ -196,10 +216,11 @@ export default {
 
   methods: {
     initData () {
-      this.editTag = false,
-        this.dialogVisible = false,
-        this.userId = 0,
-        this.getDatas()
+      this.editTag = false
+      this.dialogUserForm = false
+      this.dialogUerRole = false
+      this.userId = 0
+      this.getDatas()
 
     },
     //关闭对话框
@@ -214,18 +235,23 @@ export default {
     },
     //弹出新建按钮
     handleCreate () {
-      this.dialogVisible = true
+      this.dialogUserForm = true
       this.editTag = false
     },
     //弹出编辑按钮
     handleEdit (param) {
       this.userId = param
-      this.dialogVisible = true
+      this.dialogUserForm = true
       this.editTag = true
     },
     //删除
     handleDelete (param) {
       this.delete(param)
+    },
+    //弹出添加角色按钮
+    handleAddRole (param) {
+      this.dialogUerRole = true
+      this.userId = param.id
     },
     //提交按钮
     submit () {
