@@ -173,17 +173,19 @@ export default {
     title: '用户',
     createTime: '创建时间',
     updateTime: '更新时间',
-    addRole: '角色',
+    role: '角色',
     avater: '头像'
   },
   utils: {
     KeywordSearch: '请输入关键字搜索',
     LoadData: '正在加载数据,请稍等 ……',
+    PleaseSelect: '请选择',
     InputUserName: '请输入用户名',
     InputPassword: '请输入密码',
     InputRealName: '请输入真名',
     InputPhone: '请输入电话号码',
-    SelectStatus: '请选择'
+    SelectStatus: '请选择状态',
+
   },
   globalButton: {
     add: '添 加',

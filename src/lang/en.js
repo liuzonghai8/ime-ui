@@ -177,13 +177,14 @@ export default {
     title: 'user',
     createTime: 'createTime',
     updateTime: 'updateTime',
-    addRole: 'Role',
+    role: 'Role',
     avater: 'avater',
 
   },
   utils: {
     KeywordSearch: 'Please enter keyword search',
     LoadData: 'Loading Data Wait for a moment, please ',
+    PleaseSelect: 'Please select',
     InputUserName: 'Please enter a user name',
     InputPassword: 'InputPassword',
     InputRealName: 'InputRealName',

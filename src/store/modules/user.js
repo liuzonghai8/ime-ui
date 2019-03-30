@@ -1,5 +1,6 @@
 import { loginByUsername, logout, getUserInfo } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
+import { set, toggle } from '@/utils/vuex'
 
 const user = {
   state: {
@@ -17,9 +18,7 @@ const user = {
   },
 
   mutations: {
-    SET_CODE: (state, code) => {
-      state.code = code
-    },
+    SET_CODE: set('code'),
     SET_TOKEN: (state, token) => {
       state.token = token
     },
@@ -45,7 +44,7 @@ const user = {
 
   actions: {
     // 用户名登录
-    LoginByUsername({ commit }, userInfo) {
+    LoginByUsername ({ commit }, userInfo) {
       const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
         // 调用api ，根据用户名和密码查询
@@ -64,7 +63,7 @@ const user = {
     },
 
     // 获取用户信息
-    GetUserInfo({ commit, state }) {
+    GetUserInfo ({ commit, state }) {
       return new Promise((resolve, reject) => {
         getUserInfo(state.token).then(response => {
           console.log(response.data)
@@ -105,7 +104,7 @@ const user = {
     // },
 
     // 登出
-    LogOut({ commit, state }) {
+    LogOut ({ commit, state }) {
       return new Promise((resolve, reject) => {
         logout(state.token).then(() => {
           commit('SET_TOKEN', '')
@@ -119,7 +118,7 @@ const user = {
     },
 
     // 前端 登出
-    FedLogOut({ commit }) {
+    FedLogOut ({ commit }) {
       return new Promise(resolve => {
         commit('SET_TOKEN', '')
         removeToken()
@@ -128,7 +127,7 @@ const user = {
     },
 
     // 动态修改权限
-    ChangeRoles({ commit, dispatch }, role) {
+    ChangeRoles ({ commit, dispatch }, role) {
       return new Promise(resolve => {
         commit('SET_TOKEN', role)
         setToken(role)
