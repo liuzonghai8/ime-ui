@@ -207,7 +207,7 @@ export default {
     },
     //根据用户id 加载用户信息
     loadUser () {
-      getObj(this.userId).then(resp => { this.userForm = resp.data, console.log(resp.data) })
+      getObj(this.userId).then(resp => { this.userForm = resp.data.data, console.log(resp.data) })
     },
     //加载角色选项
     loadAllRoles () {

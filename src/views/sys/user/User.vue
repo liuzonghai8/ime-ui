@@ -126,9 +126,10 @@
     <div v-show="!loading" class="pagination-container">
       <el-pagination
         :page-sizes="[10, 20, 30, 100,`${total}`]"
-        :page-size="10"
+        :page-size.sync="queryParams.rows"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
+        :current-page.sync="queryParams.page"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       />
@@ -142,10 +143,9 @@
       :before-close="closeDialog"
       v-if="dialogUserForm"
     >
-      <!-- <UserForm :userId="userId"/> -->
       <UserForm :editTag="editTag" :userId="userId" v-on:show="closeDialog"/>
     </el-dialog>
-    <el-dialog
+    <!-- <el-dialog
       :title="$t('user.title')"
       :visible.sync="dialogUerRole"
       center
@@ -154,7 +154,7 @@
       v-if="dialogUerRole"
     >
       <UserRole :userId="userId" v-on:show="closeDialog"/>
-    </el-dialog>
+    </el-dialog>-->
   </div>
 </template>
 <script>
@@ -169,9 +169,9 @@ export default {
       //selected: [], // 选择的条目
       datas: [], // 数据集合
       loading: true, // 加载进度条
-      pagination: {
+      queryParams: {
         page: 1,
-        rowsPerPage: 10,
+        rows: 10,
         sortBy: '',
         descending: ''
 
@@ -198,9 +198,9 @@ export default {
     }
   },
   watch: {
-    // 监听数据的变化，数据有变化时刷新列表 // 监视pagination属性的变化
-    pagination: {
-      deep: true, // deep为true，会监视pagination的属性及属性中的对象属性变化
+    // 监听数据的变化，数据有变化时刷新列表 // 监视queryParams属性的变化
+    queryParams: {
+      deep: true, // deep为true，会监视queryParams的属性及属性中的对象属性变化
       handler () {
         // 变化后的回调函数，这里我们再次调用getDataFromServer即可
         this.getDatas()
@@ -210,12 +210,13 @@ export default {
     // 监视搜索字段
     search: {
       handler () {
-        this.getDatas()
+        this.queryParams.page = 1
+        //this.getDatas()
       }
     }
   },
   mounted () {
-    // 根据监听pagination 的获取数据
+    // 根据监听queryParams 的获取数据
     this.getDatas()
   },
 
@@ -235,8 +236,8 @@ export default {
     },
     //排序
     sortChange (param) {
-      this.pagination.sortBy = param.prop // 排序字段
-      this.pagination.descending = (param.order === 'descending' ? true : false)// 是否降序
+      this.queryParams.sortBy = param.prop // 排序字段
+      this.queryParams.descending = (param.order === 'descending' ? true : false)// 是否降序
     },
     //弹出新建按钮
     handleCreate () {
@@ -266,10 +267,10 @@ export default {
     getDatas () {
       fetchObjs({
         key: this.search, // 搜索条件
-        page: this.pagination.page, // 当前页
-        rows: this.pagination.rowsPerPage, // 每页大小
-        sortBy: this.pagination.sortBy, // 排序字段
-        desc: this.pagination.descending // 是否降序
+        page: this.queryParams.page, // 当前页
+        rows: this.queryParams.rows, // 每页大小
+        sortBy: this.queryParams.sortBy, // 排序字段
+        desc: this.queryParams.descending // 是否降序
       }).then(resp => {
         this.datas = resp.data.data.records
         this.total = resp.data.data.total
@@ -281,14 +282,14 @@ export default {
     handleSelectionChange (val) {
       this.selections = val
     },
-    //表格页号的改变
-    handleSizeChange (val) {
-      this.pagination.rowsPerPage = val
-    },
     //表格页内条数的改变
-    handleCurrentChange (val) {
-      this.pagination.page = val
-    },
+    // handleSizeChange (val) {
+    //   // this.queryParams.rows = val
+    // },
+    // //表格页号的改变
+    // handleCurrentChange (val) {
+    //   // this.queryParams.page = val
+    // },
 
     //物理删除的办法
     delete (param) {
