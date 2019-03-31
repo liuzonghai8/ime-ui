@@ -165,6 +165,8 @@ export default {
   methods: {
     initData () {
       this.userForm = {}
+      this.roles = []
+      this.rolesOptions = []
     },
     //提交
     submit (formName) {
@@ -207,9 +209,15 @@ export default {
     },
     //根据用户id 加载用户信息
     loadUser () {
-      getObj(this.userId).then(resp => { this.userForm = resp.data.data, console.log(resp.data) })
+      getObj(this.userId).then(resp => {
+        this.userForm = resp.data.data
+        // let role = resp.data.data.roles
+        this.roles = resp.data.data.roles.map(r => r.id)
+        console.log("testrole :{}", this.roles)
+        console.log(resp.data)
+      })
     },
-    //加载角色选项
+    //加载所有角色
     loadAllRoles () {
       fetchAllObjs().then(resp => {
         this.rolesOptions = resp.data.filter(d => d.enableTag == 0)

@@ -2,6 +2,14 @@
   <div class="app-container">
     <!-- 上部：搜索框、按钮等 -->
     <div class="filter-container">
+      <!-- 搜索输入框 -->
+      <el-input
+        style="margin-left: 20px;width: 390px"
+        v-model="search"
+        :placeholder="$t('utils.KeywordSearch')"
+        class="filter-item"
+        prefix-icon="el-icon-search"
+      />
       <!-- 添加按钮 -->
       <el-button
         class="filter-item"
@@ -10,18 +18,10 @@
         icon="el-icon-plus"
         @click="handleCreate"
       >{{ $t('globalButton.add') }}</el-button>
-
-      <!-- 搜索输入框 -->
-      <el-input
-        style="margin-left: 10px;width: 390px"
-        v-model="search"
-        :placeholder="$t('utils.KeywordSearch')"
-        class="filter-item"
-        prefix-icon="el-icon-search"
-      />
     </div>
     <!-- table height="850" -->
     <el-table
+      :header-cell-style="{background:'#eef1f6',color:'#212121'}"
       v-loading="loading"
       :element-loading-text="$t('utils.LoadData')"
       :data="datas"
@@ -92,7 +92,7 @@
           <span>{{scope.row.updateTime}}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('table.actions')" fixed="right" width="280">
+      <el-table-column :label="$t('table.actions')" fixed="right" align="center" width="200">
         <template slot-scope="scope">
           <!-- 编辑按钮  :disabled="!(selections.length==1)"    v-show="selections.length"-->
           <el-button
@@ -110,13 +110,13 @@
             round
             @click="handleDelete(scope.row)"
           >{{ $t('globalButton.delete') }}</el-button>
-          <el-button
+          <!-- <el-button
             size="small"
             type="primary"
             icon="el-icon-plus"
             round
             @click="handleAddRole(scope.row)"
-          >{{$t('user.role')}}</el-button>
+          >{{$t('user.role')}}</el-button>-->
         </template>
       </el-table-column>
     </el-table>
@@ -130,9 +130,9 @@
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
         :current-page.sync="queryParams.page"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
       />
+      <!--  @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"-->
     </div>
     <!-- 对话框 editTag ? $t('table.edit') : $('table.add')+ -->
     <el-dialog
