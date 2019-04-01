@@ -87,6 +87,7 @@
           <span>{{scope.row.updateTime}}</span>
         </template>
       </el-table-column>
+      <!-- 按钮 -->
       <el-table-column :label="$t('table.actions')" fixed="right" width="280">
         <template slot-scope="scope">
           <!-- 编辑按钮  :disabled="!(selections.length==1)"    v-show="selections.length"-->
@@ -136,8 +137,7 @@
       :before-close="closeDialog"
       v-if="dialogUserForm"
     >
-      <!-- <UserForm :userId="userId"/> -->
-      <RoleForm :editTag="editTag" :userId="userId" v-on:show="closeDialog"/>
+      <RoleForm :editTag="editTag" :roleId="roleId" v-on:show="closeDialog"/>
     </el-dialog>
     <!-- <el-dialog
       :title="$t('role.title')"
@@ -147,7 +147,7 @@
       :before-close="closeDialog"
       v-if="dialogUerRole"
     >
-    <UserRole :userId="userId" v-on:show="closeDialog"/>
+    <UserRole :roleId="roleId" v-on:show="closeDialog"/>
     </el-dialog>-->
   </div>
 </template>
@@ -173,7 +173,7 @@ export default {
       dialogUserForm: false,
       dialogUerRole: false,
       editTag: false,
-      userId: 0
+      roleId: 0
     }
   },
   components: {
@@ -217,7 +217,7 @@ export default {
       this.editTag = false
       this.dialogUserForm = false
       this.dialogUerRole = false
-      this.userId = 0
+      this.roleId = 0
       this.getDatas()
 
     },
@@ -238,7 +238,7 @@ export default {
     },
     //弹出编辑按钮
     handleEdit (param) {
-      this.userId = param
+      this.roleId = param
       this.dialogUserForm = true
       this.editTag = true
     },
@@ -249,7 +249,7 @@ export default {
     //弹出添加角色按钮
     handleAddRole (param) {
       this.dialogUerRole = true
-      this.userId = param.id
+      this.roleId = param.id
     },
     //提交按钮
     submit () {

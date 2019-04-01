@@ -89,16 +89,18 @@ export default {
   },
   watch: {
     // 深度 watcher模式
-    roleId: {
-      handler: function (val) {
-        val ? this.loadrole() : this.initData()
-      },
-      deep: true
-    }
+    // roleId: {
+    //   handler: function (val) {
+    //     console.log("val:{}", val)
+    //     val ? this.loadrole() : this.initData()
+    //   },
+    //   deep: true
+    // }
   },
   //页面加载钩子函数
   mounted () {
-    this.roled ? this.loadrole() : this.initData()
+    console.log("this.roleid: ", this.roleId)
+    this.roleId ? this.loadrole() : this.initData()
   },
 
   filters: {
@@ -168,7 +170,8 @@ export default {
     },
     //根据用户id 加载用户信息
     loadrole () {
-      getObj(this.roled).then(
+      console.log("loadrole is run ")
+      getObj(this.roleId).then(
         resp => {
           this.roleForm = resp.data
           console.log(resp.data)

@@ -7,43 +7,9 @@ import chartsRouter from './modules/charts'
 import tableRouter from './modules/table'
 import treeTableRouter from './modules/tree-table'
 import nestedRouter from './modules/nested'
+import sysRouter from './modules/sys'
 
 export default [
-  {
-    path: '/sys',
-    component: Layout,
-    // redirect: '/permission/index',
-    alwaysShow: true, // will always show the root menu
-    meta: {
-      title: 'systemManagement', // 侧边栏显示
-      icon: 'chart'
-    },
-    children: [
-      {
-        path: 'user',
-        component: () => import('@/views/sys/user/User'),
-        name: 'user',
-        meta: {
-          title: 'userManagement',
-          icon: 'user',
-          noCache: true
-          // roles: ['admin'] // or you can only set roles in sub nav
-        }
-      },
-      {
-        path: 'role',
-        component: () => import('@/views/sys/role/Role'),
-        name: 'role',
-        meta: {
-          title: 'roleManagement',
-          icon: 'user',
-          noCache: true
-          // roles: ['admin'] // or you can only set roles in sub nav
-        }
-      }
-    ]
-  },
-
   {
     path: '/permission',
     component: Layout,
@@ -99,11 +65,14 @@ export default [
   },
 
   /** When your routing table is too long, you can split it into small modules**/
+
+  sysRouter,
   componentsRouter,
   chartsRouter,
   nestedRouter,
   tableRouter,
   treeTableRouter,
+
 
   {
     path: '/example',
