@@ -176,11 +176,25 @@ export default {
     role: '角色',
     avater: '头像'
   },
+  role: {
+    id: '序号',
+    name: '角色名',
+    code: '编码',
+    description: '描述',
+    enableTag: '状态',
+    createTime: '创建时间',
+    updateTime: '更新时间',
+    title: '用户',
+    permission: '权限'
+
+
+  },
   utils: {
     KeywordSearch: '请输入关键字搜索',
     LoadData: '正在加载数据,请稍等 ……',
     PleaseSelect: '请选择',
     InputUserName: '请输入用户名',
+    Inputroleame: '请输入角色名',
     InputPassword: '请输入密码',
     InputRealName: '请输入真名',
     InputPhone: '请输入电话号码',

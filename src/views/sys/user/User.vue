@@ -301,14 +301,24 @@ export default {
           type: 'warning'
         }).then(() => {
           deleteObj(param.id)
-            .then(() => {
-              this.getDatas()
-              this.$notify({
-                title: '成功',
-                message: '删除成功',
-                type: 'success',
-                duration: 2000
-              })
+            .then((resp) => {
+              if (resp.data.data) {
+                this.getDatas()
+                this.$notify({
+                  title: '成功',
+                  message: '删除成功',
+                  type: 'success',
+                  duration: 2000
+                })
+              }
+              else {
+                this.$notify({
+                  title: '失败',
+                  message: '删除失败',
+                  type: 'error',
+                  duration: 2000
+                })
+              }
             })
         },
           () => { console.log('取消') }

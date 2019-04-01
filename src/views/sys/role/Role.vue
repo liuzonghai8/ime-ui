@@ -34,29 +34,24 @@
       @sort-change="sortChange"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column :label="$t('user.id')" prop="id" sortable="custom" align="center" width="95">
+      <el-table-column :label="$t('role.id')" prop="id" sortable="custom" align="center" width="95">
         <template slot-scope="scope">
           <span>{{ scope.row.id }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="login_name" sortable="custom" :label="$t('user.LoginName')">
+      <el-table-column prop="name" sortable="custom" :label="$t('role.name')">
         <template slot-scope="scope">
-          <span>{{ scope.row.loginName }}</span>
+          <span>{{ scope.row.name }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="real_name" sortable="custom" :label="$t('user.realName')">
+      <el-table-column prop="code" sortable="custom" :label="$t('role.code')">
         <template slot-scope="scope">
-          <span>{{ scope.row.realName }}</span>
+          <span>{{ scope.row.code }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="phone" :label="$t('user.phone')">
+      <el-table-column prop="description" :label="$t('role.description')">
         <template slot-scope="scope">
-          <span>{{ scope.row.phone }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="roles" :label="$t('user.role')">
-        <template slot-scope="scope">
-          <span v-for="role in scope.row.roles " :key="role.id">{{ role.name +"、 "}}</span>
+          <span>{{ scope.row.description }}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -64,7 +59,7 @@
         class-name="status-col"
         prop="enable_tag"
         sortable="custom"
-        :label="$t('user.enableTag')"
+        :label="$t('role.enableTag')"
       >
         <template slot-scope="scope">
           <el-tag>{{scope.row.enableTag | statusFilter}}</el-tag>
@@ -74,7 +69,7 @@
         align="center"
         prop="create_time"
         sortable="custom"
-        :label="$t('user.createTime')"
+        :label="$t('role.createTime')"
       >
         <template slot-scope="scope">
           <!-- <span>{{scope.row.createTime | parseTime('{y}-{m}-{d} {h}:{i}')}}</span> -->
@@ -85,7 +80,7 @@
         align="center"
         prop="update_time"
         sortable="custom"
-        :label="$t('user.updateTime')"
+        :label="$t('role.updateTime')"
       >
         <template slot-scope="scope">
           <!-- <span>{{scope.row.updateTime | parseTime('{y}-{m}-{d} {h}:{i}')}}</span> -->
@@ -116,7 +111,7 @@
             icon="el-icon-plus"
             round
             @click="handleAddRole(scope.row)"
-          >{{$t('user.role')}}</el-button>
+          >{{$t('role.permission')}}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -126,16 +121,15 @@
     <div v-show="!loading" class="pagination-container">
       <el-pagination
         :page-sizes="[10, 20, 30, 100,`${total}`]"
-        :page-size="10"
+        :page-size.sync="queryParams.rows"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
+        :current-page.sync="queryParams.page"
       />
     </div>
     <!-- 对话框 editTag ? $t('table.edit') : $('table.add')+ -->
     <el-dialog
-      :title="(editTag? $t('globalButton.edit'):$t('globalButton.add'))+'  '+$t('user.title')"
+      :title="(editTag? $t('globalButton.edit'):$t('globalButton.add'))+'  '+$t('role.title')"
       :visible.sync="dialogUserForm"
       center
       :close="closeDialog"
@@ -145,32 +139,32 @@
       <!-- <UserForm :userId="userId"/> -->
       <RoleForm :editTag="editTag" :userId="userId" v-on:show="closeDialog"/>
     </el-dialog>
-    <el-dialog
-      :title="$t('user.title')"
+    <!-- <el-dialog
+      :title="$t('role.title')"
       :visible.sync="dialogUerRole"
       center
       :close="closeDialog"
       :before-close="closeDialog"
       v-if="dialogUerRole"
     >
-      <!-- <UserRole :userId="userId" v-on:show="closeDialog"/> -->
-    </el-dialog>
+    <UserRole :userId="userId" v-on:show="closeDialog"/>
+    </el-dialog>-->
   </div>
 </template>
 <script>
-import { fetchObjs, deleteObj } from '@/api/sys/user'
+import { fetchObjs, deleteObj } from '@/api/sys/role'
 import RoleForm from './RoleForm'
 export default {
   data: () => {
     return {
       search: '', // 搜索关键字
       total: 0, // 总条数
-      //selected: [], // 选择的条目
+      selected: [], // 选择的条目
       datas: [], // 数据集合
       loading: true, // 加载进度条
-      pagination: {
+      queryParams: {
         page: 1,
-        rowsPerPage: 10,
+        rows: 10,
         sortBy: '',
         descending: ''
 
@@ -196,9 +190,9 @@ export default {
     }
   },
   watch: {
-    // 监听数据的变化，数据有变化时刷新列表 // 监视pagination属性的变化
-    pagination: {
-      deep: true, // deep为true，会监视pagination的属性及属性中的对象属性变化
+    // 监听数据的变化，数据有变化时刷新列表 // 监视queryParams属性的变化
+    queryParams: {
+      deep: true, // deep为true，会监视queryParams的属性及属性中的对象属性变化
       handler () {
         // 变化后的回调函数，这里我们再次调用getDataFromServer即可
         this.getDatas()
@@ -208,12 +202,13 @@ export default {
     // 监视搜索字段
     search: {
       handler () {
+        this.queryParams.page = 1
         this.getDatas()
       }
     }
   },
   mounted () {
-    // 根据监听pagination 的获取数据
+    // 根据监听queryParams 的获取数据
     this.getDatas()
   },
 
@@ -233,8 +228,8 @@ export default {
     },
     //排序
     sortChange (param) {
-      this.pagination.sortBy = param.prop // 排序字段
-      this.pagination.descending = (param.order === 'descending' ? true : false)// 是否降序
+      this.queryParams.sortBy = param.prop // 排序字段
+      this.queryParams.descending = (param.order === 'descending' ? true : false)// 是否降序
     },
     //弹出新建按钮
     handleCreate () {
@@ -264,10 +259,10 @@ export default {
     getDatas () {
       fetchObjs({
         key: this.search, // 搜索条件
-        page: this.pagination.page, // 当前页
-        rows: this.pagination.rowsPerPage, // 每页大小
-        sortBy: this.pagination.sortBy, // 排序字段
-        desc: this.pagination.descending // 是否降序
+        page: this.queryParams.page, // 当前页
+        rows: this.queryParams.rows, // 每页大小
+        sortBy: this.queryParams.sortBy, // 排序字段
+        desc: this.queryParams.descending // 是否降序
       }).then(resp => {
         this.datas = resp.data.data.records
         this.total = resp.data.data.total
@@ -279,18 +274,18 @@ export default {
     handleSelectionChange (val) {
       this.selections = val
     },
-    //表格页号的改变
-    handleSizeChange (val) {
-      this.pagination.rowsPerPage = val
-    },
-    //表格页内条数的改变
-    handleCurrentChange (val) {
-      this.pagination.page = val
-    },
+    // //表格页号的改变
+    // handleSizeChange (val) {
+    //   this.queryParams.rows = val
+    // },
+    // //表格页内条数的改变
+    // handleCurrentChange (val) {
+    //   this.queryParams.page = val
+    // },
 
     //物理删除的办法
     delete (param) {
-      this.$confirm('此操作将永久删除该用户(用户名:' + param.loginName + '), 是否继续?',
+      this.$confirm('此操作将永久删除该角色(角色名为:' + param.name + '), 是否继续?',
         '提示',
         {
           confirmButtonText: '确定',
@@ -298,14 +293,24 @@ export default {
           type: 'warning'
         }).then(() => {
           deleteObj(param.id)
-            .then(() => {
-              this.getDatas()
-              this.$notify({
-                title: '成功',
-                message: '删除成功',
-                type: 'success',
-                duration: 2000
-              })
+            .then((resp) => {
+              if (resp.data.data) {
+                this.getDatas()
+                this.$notify({
+                  title: '成功',
+                  message: '删除成功',
+                  type: 'success',
+                  duration: 2000
+                })
+              }
+              else {
+                this.$notify({
+                  title: '失败',
+                  message: '删除失败',
+                  type: 'error',
+                  duration: 5000
+                })
+              }
             })
         },
           () => { console.log('取消') }

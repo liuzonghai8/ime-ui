@@ -23,14 +23,6 @@ export const getObj = async (id) => {
     url: 'upms/sys/user/' + id,
   })
 }
-// //根据Id删除
-// export async function deleteObj (id) {
-//   return await request({
-//     method: 'delete',
-//     url: 'upms/sys/user/' + id
-//   })
-// }
-
 //添加
 export const addObj = async (param) => {
   return await request({

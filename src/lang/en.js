@@ -181,15 +181,29 @@ export default {
     avater: 'avater',
 
   },
+  role: {
+    id: 'id',
+    name: 'name',
+    code: 'code',
+    description: 'description',
+    enableTag: 'status',
+    createTime: 'createTime',
+    updateTime: 'updateTime',
+    title: 'Role',
+    permission: 'permission'
+
+  },
   utils: {
     KeywordSearch: 'Please enter keyword search',
     LoadData: 'Loading Data Wait for a moment, please ',
     PleaseSelect: 'Please select',
-    InputUserName: 'Please enter a user name',
-    InputPassword: 'InputPassword',
-    InputRealName: 'InputRealName',
-    InputPhone: 'InputPhone',
-    SelectStatus: 'SelectStatus'
+    InputUserName: 'Please input a user name',
+    Inputroleame: 'Please input a Role name',
+    InputPassword: 'Please input password',
+    InputRealName: 'Please input realName',
+    InputPhone: 'Please input phone',
+    InputCode: 'Please input code',
+    SelectStatus: 'Please select status'
 
   },
   globalButton: {
