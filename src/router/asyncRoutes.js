@@ -8,6 +8,7 @@ import tableRouter from './modules/table'
 import treeTableRouter from './modules/tree-table'
 import nestedRouter from './modules/nested'
 import sysRouter from './modules/sys'
+// import adminRouter from './modules/admin'
 
 export default [
   {
@@ -65,14 +66,13 @@ export default [
   },
 
   /** When your routing table is too long, you can split it into small modules**/
-
   sysRouter,
+  // adminRouter,
   componentsRouter,
   chartsRouter,
   nestedRouter,
   tableRouter,
   treeTableRouter,
-
 
   {
     path: '/example',

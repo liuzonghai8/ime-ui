@@ -7,8 +7,8 @@ export function loginByUsername(username, password) {
     password
   }
   return request({
-    url: 'upms/sys/user/login',
-    // url: '/login/login',
+    // url: 'upms/sys/user/login',
+    url: '/login/login',
     method: 'post',
     data: stringify(data)
   })

@@ -15,9 +15,9 @@ module.exports = {
 
     // can be overwritten by process.env.HOST
     // if you want dev by ip, please set host: '0.0.0.0'
-    // host: 'localhost',
+    host: 'localhost',
     // port: 9527, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
-    host: '0.0.0.0',
+    // host: '0.0.0.0',
     port: 3030,
 
     autoOpenBrowser: false,
@@ -28,7 +28,7 @@ module.exports = {
     // Use Eslint Loader?
     // If true, your code will be linted during bundling and
     // linting errors and warnings will be shown in the console.
-    useEslint: false,//true,
+    useEslint: false, // true,
     // If true, eslint errors and warnings will also be shown in the error overlay
     // in the browser.
     showEslintErrorsInOverlay: false,
